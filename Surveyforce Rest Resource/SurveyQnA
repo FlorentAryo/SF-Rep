@@ -1,0 +1,133 @@
+//Survey wrapper class. Created by Florentino Aryo
+Global with sharing class SurveyQnA {     
+    public String SurveyId {get; set;}
+    public List<QuestionAndAnswers> QuestionsAndAnswers {get; set;}
+    
+    Global SurveyQnA(List<Survey_Question__c> lsq) {
+        SurveyId = lsq[0].Survey__c;
+        List<QuestionAndAnswers> allQuestions = new List<QuestionAndAnswers>();
+        String qQuestion = '';
+        String qChoices ='';
+        Map<String, String> countOption = new Map<String, String>();
+        Double old_OrderNumber = 0;
+        Double new_OrderNumber;
+        Double difference = 0;
+        Integer countOptionIndex = 0;
+        /* Make sure that the order number follow each other (after deleting a question, orders might not do so) */
+        for (Survey_Question__c q : lsq){ 
+            new_OrderNumber = q.OrderNumber__c;
+            difference = new_OrderNumber - old_OrderNumber - 1;
+            if (difference > 0) {
+                Double dd = double.valueOf(difference);
+                Integer newOrderInt = dd.intValue();
+                q.OrderNumber__c -= Integer.valueOf(newOrderInt); 
+            }
+            old_OrderNumber = q.OrderNumber__c;
+            QuestionAndAnswers theQ = new QuestionAndAnswers(q);
+            allQuestions.add(theQ);
+            if(allQuestions[countOptionIndex].multiOptions != NULL) countOption.put(String.valueOf(countOptionIndex), String.valueOf(allQuestions[countOptionIndex].multiOptions.size()-1));
+            countOptionIndex++;
+        }
+        System.debug('allquestions='+allQuestions);
+		QuestionsAndAnswers = allQuestions;        
+        
+    }
+    public class QuestionAndAnswers {
+        public String   name                   {get; set;}
+        public String   QuestionId                           {get; set;}
+        public String   question               {get; set;}
+        public String   orderNumber            {get; set;}
+        public List<String> singleOptions{get; set;}
+        public List<String> multiOptions {get; set;}
+        public Boolean  required               {get; set;}
+        public String   questionType           {get; set;}
+        public String   renderFreeText             {get; set;}
+        public String   renderSelectRadio      {get; set;}
+        public String   renderSelectCheckboxes {get; set;}
+        public String   renderSelectRow        {get; set;}
+        public String   singleOptionsForChart  {get; set;}
+        public List<String> strList              {get; set;} // The question's option as a list of string
+        public List<String> rowOptions   {get; set;}
+        public boolean  noData                 {get; set;}
+        public String noOfRowsForTextArea {get; set;}
+        
+        public QuestionAndAnswers(Survey_Question__c sq){
+            name = sq.Name;
+            Questionid = sq.Id;
+            question = sq.Question__c;
+            orderNumber = String.valueOf(sq.OrderNumber__c+1);
+            String choices = sq.Choices__c;
+            required = sq.Required__c;
+            questionType = sq.Type__c;
+            singleOptionsForChart = ' ';
+            if (sq.Type__c=='Single Select--Vertical'){
+                renderSelectRadio='true';
+                singleOptions = stringToSelectOptions(choices);
+    
+                renderSelectCheckboxes='false';
+                renderFreeText='false';
+                renderSelectRow = 'false';
+            }
+            else if (sq.Type__c=='Multi-Select--Vertical'){
+                renderSelectCheckboxes='true';
+                multiOptions = stringToSelectOptions(choices);
+                renderSelectRadio='false';
+                renderFreeText='false';
+                renderSelectRow = 'false';
+            }
+            else if (sq.Type__c=='Single Select--Horizontal'){
+                renderSelectCheckboxes='false';
+                rowOptions = stringToSelectOptions(choices);
+                renderSelectRadio='false';
+                renderFreeText='false';
+                renderSelectRow = 'true';
+    
+            }
+            else if (sq.Type__c=='Free Text' || sq.Type__c=='Free Text - Single Row Visible'){
+                renderFreeText='true';
+                renderSelectRadio='false';
+                renderSelectCheckboxes='false';
+                renderSelectRow = 'false';
+                choices='';
+                //If it's text area but for single row then only show single row even though it's stil text area
+                if(sq.Type__c == 'Free Text - Single Row Visible'){
+                    noOfRowsForTextArea = '1';
+                }else{
+                    noOfRowsForTextArea = '5';
+                }    
+    
+            }
+        }
+        private List<String> stringToSelectOptions(String str){
+            if (str == '')
+            {
+                return new List<String>();
+            }
+            List<String> Liststr = str.split('\n');
+    
+            List<String> returnVal = new List<String>();
+            Integer i = 0;
+            for(String s: Liststr){
+                if (s!='') {
+                    if (s != 'null' && s!= null) {
+                        String sBis = s.replace(' ', '%20');
+                        singleOptionsForChart += s.trim()+'|';
+    
+                    /*RSC2012-02-20
+                    String st = s.replace (' ', '&nbsp;');
+                    returnVal.add(new SelectOption(String.valueOf(i),st));
+                    */
+                        s = s.remove('\r');
+                        returnVal.add(s);
+                        System.debug('*****VALUES: ' + s);
+                        i++;
+                    }
+                }
+            }
+            strList = returnVal;
+            singleOptionsForChart = singleOptionsForChart.substring(0, singleOptionsForChart.length()-1);
+            return returnVal;
+        }
+    }
+    
+}
