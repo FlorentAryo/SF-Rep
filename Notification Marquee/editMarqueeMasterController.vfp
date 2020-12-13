@@ -1,0 +1,128 @@
+<apex:page extensions="editMarqueeMasterController" standardController="Marquee__c" title="Edit Marquee" lightningStylesheets="true" label="Edit Marquee" >
+    <script type="text/javascript">
+        function selectAllCheckboxes(obj,receivedInputID){
+            var inputCheckBox = document.getElementsByTagName("input");                  
+            for(var i=0; i<inputCheckBox.length; i++){          
+                if(inputCheckBox[i].id.indexOf(receivedInputID)!=-1){                                     
+                    inputCheckBox[i].checked = obj.checked;
+                }
+            }
+        }
+    twistSection(document.getElementById('{!$Component.block1.section1}').getElementsByTagName('img')[0]);
+    twistSection(document.getElementById('{!$Component.block1.section2}').getElementsByTagName('img')[0]);
+    twistSection(document.getElementById('{!$Component.block1.section3}').getElementsByTagName('img')[0]);
+    </script>
+    <apex:form id="form">
+        <apex:pageBlock title="New Marquee Master" >
+            <apex:pageblocksection >
+                                
+                <apex:inputField label="Name" value="{!marque.Name}" id="Name"/>
+            
+                <apex:inputField value="{!marque.Category__c}" id="Category"/>
+                
+                <apex:inputField value="{!marque.Content__c}" id="Content"/>
+                
+                <apex:inputField value="{!marque.Start_Date_Time__c}" id="Start"/>
+                
+                <apex:inputField value="{!marque.End_Date_Time__c}" id="End"/>
+                
+            </apex:pageblocksection>            
+            
+            <apex:pageblockSection title="Role List" collapsible="true" columns="4" id="section1">
+             
+                <apex:pageBlockTable value="{!Lrolewrapper}" var="roleWrap" id="table" title="All Role">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <apex:inputCheckbox >
+                                <apex:actionSupport onsubmit="selectAllCheckboxes(this,'inputId1')" event="onclick" 
+                                action="{!processSelected}" 
+                                rerender="table2" status="addingrole"/>
+                            </apex:inputCheckbox>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!roleWrap.selected}" id="inputId1" >
+                            <apex:actionSupport event="onclick" 
+                                action="{!processSelected}" 
+                                rerender="table2" status="addingrole"/>
+                        </apex:inputCheckbox>
+                        <apex:actionStatus id="addingrole" 
+                           startText=" (processing)" 
+                           stopText=" "/>
+                    </apex:column>
+                    <apex:column value="{!roleWrap.Role.Name}" />
+                </apex:pageBlockTable>          
+                       
+                <apex:pageBlockTable value="{!selecteduserrole}" var="c" id="table2" title="Selected Role">
+                    <apex:column value="{!c.Name}" headerValue="Selected Role Name"/>
+                </apex:pageBlockTable>             
+                             
+            </apex:pageblockSection>
+            
+            <apex:pageblockSection title="Profile List" collapsible="true" columns="4" id="section2">
+             
+                <apex:pageBlockTable value="{!Lprofilewrapper}" var="profileWrap" id="table" title="All Role">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <apex:inputCheckbox >
+                                <apex:actionSupport onsubmit="selectAllCheckboxes(this,'inputId2')" event="onclick" 
+                                action="{!profileSelected}" 
+                                rerender="table3" status="addingroleprofile"/>
+                            </apex:inputCheckbox>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!profileWrap.selected}" id="inputId2" >
+                            <apex:actionSupport event="onclick" 
+                                action="{!profileSelected}" 
+                                rerender="table3" status="addingprofile"/>
+                        </apex:inputCheckbox>
+                        <apex:actionStatus id="addingroleprofile" 
+                           startText=" (processing)" 
+                           stopText=" "/>
+                    </apex:column>
+                    <apex:column value="{!profileWrap.profile.Name}" />
+                </apex:pageBlockTable>          
+                       
+                <apex:pageBlockTable value="{!selectedprofile}" var="c" id="table3" title="Selected Profile">
+                    <apex:column value="{!c.Name}" headerValue="Selected Profile Name"/>
+                </apex:pageBlockTable>
+                
+                
+             
+            </apex:pageblockSection>
+            
+            <apex:pageblockSection title="Public Group List" collapsible="true" columns="4" id="section3">
+             
+                <apex:pageBlockTable value="{!LGroupwrapper}" var="GroupWrap" id="table" title="All Group">
+                    <apex:column >
+                        <apex:facet name="header" >
+                            <apex:inputCheckbox >
+                                <apex:actionSupport onsubmit="selectAllCheckboxes(this,'inputId3')" event="onclick" 
+                                action="{!GroupSelected}" 
+                                rerender="table4" status="addingGroup"/>
+                            </apex:inputCheckbox>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!GroupWrap.selected}" id="inputId3" >
+                            <apex:actionSupport event="onclick" 
+                                action="{!GroupSelected}" 
+                                rerender="table4" status="addingGroup"/>
+                        </apex:inputCheckbox>
+                        <apex:actionStatus id="addingGroup" 
+                           startText=" (processing)" 
+                           stopText=" "/>
+                    </apex:column>
+                    <apex:column value="{!GroupWrap.Grup.Name}" />
+                </apex:pageBlockTable>          
+                       
+                <apex:pageBlockTable value="{!selectedGroup}" var="c" id="table4" title="Selected Group">
+                    <apex:column value="{!c.Name}" headerValue="Selected Group Name"/>
+                </apex:pageBlockTable>
+                
+                
+             
+            </apex:pageblockSection>
+            
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!save}" value="Save" reRender="form"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>    
+</apex:page>
