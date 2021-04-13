@@ -1,4 +1,4 @@
-<aura:component controller="Vlog_whatsappCTRL" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+<aura:component controller="whatsappCTRL" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
  <aura:attribute name="recordId" type="String" />
     <aura:attribute name="con" type="Lead" />
     <aura:attribute name="msg" type="String" />
