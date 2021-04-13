@@ -1,4 +1,4 @@
-public class Vlog_whatsappCTRL {
+public class whatsappCTRL {
     @AuraEnabled 
     public static Lead fetchContact(String conId){
         Lead le = [Select Id, OwnerId, Name,Phone, MobilePhone FROM Lead where Id=:conId ];  
