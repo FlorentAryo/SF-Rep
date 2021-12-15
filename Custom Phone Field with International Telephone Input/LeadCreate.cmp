@@ -1,0 +1,191 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,lightning:actionOverride" controller="Lead_Creation_Controller">
+     
+    <aura:attribute name="showConfirmDialog" type="boolean" default="false"/>    
+    <aura:attribute name="showConfirmDialog2" type="boolean" default="false"/>
+    <aura:attribute name="con" type="Lead" />
+    <aura:attribute name="LeadId" type="Id" />
+    <aura:attribute name="PhoneValue" type="String" />
+    <aura:attribute name="Phone2Value" type="String" />    
+    <aura:attribute name="isManualInserted" type="boolean" default="true"/>
+    <aura:attribute name="ShowDialCode" type="boolean" default="none"/>
+    <aura:attribute name="ShowLeadSourceDetail" type="boolean" default="none"/>
+    <aura:attribute name="lockProject" type="boolean" default="none"/>
+    <aura:attribute name="User" type="User"/>
+    <aura:attribute name="OwnerId" type="Id" />
+    <lightning:workspaceAPI aura:id="leadCreation"/>
+    <ltng:require styles="{!$Resource.InputTelV11+ '/intl-tel-input-11.0.0/build/css/intlTelInput.css'}"
+                  scripts="{!join(',',$Resource.jQuery, 
+                           $Resource.InputTelV11 + '/intl-tel-input-11.0.0/build/js/intlTelInput.js')}"
+                  afterScriptsLoaded="{!c.loadInputTel}" 
+          />
+     
+    <!--Component Start-->
+        
+	<div class="slds-m-around_xx-large">
+         
+        <aura:if isTrue="{!v.showConfirmDialog2}">
+            <!--Modal Box Start-->
+            <div aura:id="modal1" role="dialog" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!--Modal Box Header Start-->
+                    <header class="slds-modal__header">
+                        <h1 class="slds-text-heading--medium">Confirmation</h1>
+                    </header>
+                    <!--Modal Box Header End-->
+                     
+                    <!--Modal Box Content Start-->
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <center><b>This Lead is already exist in your record</b></center>
+                    </div>
+                    <!--Modal Box Content End-->
+                     
+                    <!--Modal Box Button Start-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button name='No2' label='OK' onclick='{!c.handleConfirmDialogNo}'/>
+                        <!--<lightning:button variant="brand" name='Yes' label='Yes' onclick='{!c.handleConfirmDialogYes}'/>-->
+                    </footer>
+                    <!--Modal Box Button End-->
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>            
+        </aura:if>
+    </div>    
+    <!--Component-->
+    <div class="slds-m-around_xx-large">
+         
+        <aura:if isTrue="{!v.showConfirmDialog}">
+            <!--Modal Box Start-->
+            <div aura:id="modal2" role="dialog" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!--Modal Box Header Start-->
+                    <header class="slds-modal__header">
+                        <h1 class="slds-text-heading--medium">Confirmation</h1>
+                    </header>
+                    <!--Modal Box Header End-->
+                     
+                    <!--Modal Box Content Start-->
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <center><b>Duplicate Lead detected, request for ownership? </b></center>
+                    </div>
+                    <!--Modal Box Content End-->
+                     
+                    <!--Modal Box Button Start-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button name='No' label='No' onclick='{!c.handleConfirmDialogNo}'/>
+                        <lightning:button variant="brand" name='Yes' label='Yes' onclick='{!c.handleConfirmDialogYes}'/>
+                    </footer>
+                    <!--Modal Box Button End-->
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>            
+        </aura:if>
+    </div>
+    <!--<lightning:messages aura:id="OppMessage" />-->
+    <div aura:id="topComp" class="slds-m-top_none">
+        <lightning:card title="New Lead" iconName="standard:lead" class="">
+            <!--<lightning:recordEditForm aura:id="leadCreateForm" objectApiName="Lead" 
+                                      	onsuccess="{!c.handleSuccess}"
+                                        onsubmit="{!c.handleSubmit}"
+                                        onerror="{!c.handleError}"
+                                        onload="{!c.handleLoad}">-->
+            <lightning:recordEditForm aura:id="leadCreateForm" objectApiName="Lead" 
+                                      	onsuccess="{!c.handleSuccess}"
+                                        onsubmit="{!c.handleSubmit}"
+                                        onload="{!c.handleLoad}">
+                <lightning:messages />
+                 
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField fieldName="FirstName"></lightning:inputField>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField fieldName="Status"></lightning:inputField>
+                    </div>
+                </div>
+                 
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField fieldName="LastName"></lightning:inputField>
+                    </div> 
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField aura:id="ProjectField" fieldName="Project__c" value="{!v.User.Project__c}" disabled="{!v.lockProject}"></lightning:inputField>
+                    </div>
+                </div>
+                 
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField aura:id="EmailField" fieldName="Email"></lightning:inputField>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField fieldName="Company"></lightning:inputField>
+                    </div>
+                </div>
+                
+                <div class="slds-grid slds-form-element">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium slds-form-element__control">
+                        <aura:if isTrue="{!v.ShowDialCode}">
+                            <a style="color:red;">*</a> Phone<br/>
+                            <input id="phone3" required="required" type="tel" name="phone" class="slds-input" onchange="{!c.handlePhoneOnchange}"/>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium slds-form-element__control">
+                        <aura:if isTrue="{!v.ShowDialCode}">
+                            Phone 2<br/>
+                            <input id="phone4" type="tel" name="phone" class="slds-input" onchange="{!c.handlePhone2Onchange}"/>
+                        </aura:if>
+                    </div>
+                    
+                    
+                </div>
+                
+                <div class="slds-grid slds-form-element">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField aura:id="leadSrc" fieldName="LeadSource" onchange="{!c.handleSourceOnchange}" required="true"></lightning:inputField>
+                    </div>
+                    <aura:if isTrue="{!v.ShowLeadSourceDetail}">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                            <lightning:inputField fieldName="Lead_Source_Detail__c" required="true"></lightning:inputField>
+                        </div>
+                    </aura:if>
+                </div>
+                
+                <div class="slds-grid">  
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField fieldName="Street" ></lightning:inputField>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField fieldName="City"></lightning:inputField>
+                    </div>
+                </div>
+                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        <lightning:inputField fieldName="State"></lightning:inputField>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">                        
+                        <lightning:inputField fieldName="PostalCode"></lightning:inputField>                        
+                    </div>
+                </div>
+                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_medium">                        
+                        <lightning:inputField fieldName="Country"></lightning:inputField>
+                    </div>
+                    <div class="slds-hide">
+                        <lightning:inputField aura:id="PhoneField" fieldName="Phone" class="" value="{!v.PhoneValue}"></lightning:inputField>
+                        <lightning:inputField fieldName="Is_Manual_Inserted__c" class="slds-hidden" value="{!v.isManualInserted}"></lightning:inputField>
+                        <lightning:inputField aura:id="Phone2Field" fieldName="Phone_2__c" class="slds-hidden" value="{!v.Phone2Value}"></lightning:inputField>
+                    </div>
+                </div>                
+                     
+                <lightning:button type="submit" label="Save" variant="brand"/>
+            </lightning:recordEditForm>
+        </lightning:card>
+    </div>    
+    
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+            &nbsp;
+        </div>
+    </div>
+</aura:component>
