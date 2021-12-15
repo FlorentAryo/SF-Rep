@@ -1,0 +1,41 @@
+.THIS .select {
+    display: block !important;
+}
+.THIS .divpad {
+    padding:0.5rem;
+}
+.THIS .widithinputtext {
+    width:100%;
+    /*border-color:black;
+    border-style:none;*/
+    outline:none !important;
+}
+.THIS .widithinputcheckbox{
+    /*border-color:white;
+    border-style:none;
+    outline:none !important;*/
+}
+.THIS .widithdate {
+    /*width:95%;
+    border-color:white;
+    border-style:none;
+    outline:none !important;*/
+}
+.THIS .widithinputtext:focus {
+    width:100%;
+    border-color:white;
+    border-style:none;
+    border:none;
+}
+.THIS .uiInputTextForAutocomplete:focus {
+    width:100%;
+}
+.THIS .uiInputTextForAutocomplete {
+    width:100%;
+}
+.THIS .toggle{
+    display:none;
+}
+.THIS .showComp {
+    display:flex !important;
+}
