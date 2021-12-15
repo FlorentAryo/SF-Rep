@@ -1,0 +1,598 @@
+<aura:component controller="New_Account_CTRL2" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride" access="global" >
+    <aura:attribute name="Propinsi" type="Map"/>
+    <aura:attribute name="KotaKTP" type="Map"/>
+    <aura:attribute name="KecamatanKTP" type="Map"/>
+    <aura:attribute name="KelurahanKTP" type="Map"/>
+    <aura:attribute name="KotaRumah" type="Map"/>
+    <aura:attribute name="KecamatanRumah" type="Map"/>
+    <aura:attribute name="KelurahanRumah" type="Map"/>
+    <aura:attribute name="KotaKantor" type="Map"/>
+    <aura:attribute name="KecamatanKantor" type="Map"/>
+    <aura:attribute name="KelurahanKantor" type="Map"/>
+    <aura:attribute name="KotaSurat" type="Map"/>
+    <aura:attribute name="KecamatanSurat" type="Map"/>
+    <aura:attribute name="KelurahanSurat" type="Map"/>
+    <aura:attribute name="KotaApps" type="Map"/>
+    <aura:attribute name="KecamatanApps" type="Map"/>
+    <aura:attribute name="KelurahanApps" type="Map"/>
+    <aura:attribute name="TipeWilayah" type="String"/>
+    <aura:attribute name="activeSections" type="List" default="['ktp','kantor']" />
+    <aura:attribute name="activeSectionsMessage" type="String" default="" />
+    <aura:attribute name="toggleKotaRumah" type="boolean" default="none" />
+    <aura:attribute name="toggleKecamatanRumah" type="boolean" default="none" />
+    <aura:attribute name="toggleKelurahanRumah" type="boolean" default="none" />
+    <aura:attribute name="toggleKotaKantor" type="boolean" default="none" />
+    <aura:attribute name="toggleKecamatanKantor" type="boolean" default="none" />
+    <aura:attribute name="toggleKelurahanKantor" type="boolean" default="none" />
+    <aura:attribute name="toggleKotaKTP" type="String" default="none" />
+    <aura:attribute name="toggleKecamatanKTP" type="boolean" default="none" />
+    <aura:attribute name="toggleKelurahanKTP" type="boolean" default="none" />
+    <aura:attribute name="toggleKotaSurat" type="boolean" default="none" />
+    <aura:attribute name="toggleKecamatanSurat" type="boolean" default="none" />
+    <aura:attribute name="toggleKelurahanSurat" type="boolean" default="none" />
+    <aura:attribute name="toggleKotaApps" type="boolean" default="none" />
+    <aura:attribute name="toggleKecamatanApps" type="boolean" default="display:none;" />
+    <aura:attribute name="toggleKelurahanApps" type="boolean" default="none" />  
+    <aura:attribute name="editload" type="boolean" default="false" />
+    <aura:attribute name="con" type="Contact"/>
+    <aura:attribute name="acc" type="Account" default="{'sobjectType':'Account'}"/>
+    <ltng:require styles="{!$Resource.select2+ '/select2-4.0.3/dist/css/select2.min.css'}"
+                  scripts="{!join(',',$Resource.select2 + '/select2-4.0.3/jquery-2.2.4.min.js', $Resource.select2 + '/select2-4.0.3/dist/js/select2.min.js')}"
+          afterScriptsLoaded="{!c.loadJquery}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+     
+    <!--Component Start-->
+    <div class="slds-m-around--xxx-small slds-align_absolute-center">        
+        <div class="container-fluid slds-box slds-theme_default">
+            <div records-lwcdetailpanel_lwcdetailpanel="" class="slds-modal__header"><h2 records-lwcdetailpanel_lwcdetailpanel="" class="slds-modal__title slds-hyphenate slds-text-heading--medium"><b>New Account</b></h2></div>
+                        
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Salutation
+                        <div class=" slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Salutation" value="{!v.acc.Salutation}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        NPWP
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="NPWP__c" value="{!v.acc.NPWP__pc}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        First Name
+                        <div class="slds-box_xx-small" style="display:block;" >
+                        	<force:inputField class="widithinputtext" aura:id="FirstName" value="{!v.acc.FirstName}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Tempat Lahir
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Tempat_Lahir__pc" value="{!v.acc.Tempat_Lahir__pc}"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        <a style="color:red">* </a> Last Name
+                        <div class="slds-box_xx-small" style="display:block;" tabindex="0" id="LastNameDiv">
+                        	<force:inputField class="" aura:id="LastName" value="{!v.acc.LastName}" required="true"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">   
+                        Kota Lahir
+                        <!--<force:inputField class="widithlookup" aura:id="Kode_Kota_Lahir__pc" value="{!v.acc.Kode_Kota_Lahir__pc}"/> --> 
+                        <aura:if isTrue="{!empty(v.acc.Pekerjaan__pc)}">
+                        	<c:CustomLookup objectName="MS_Kota__c" fieldName="Name" value="{!v.acc.Kode_Kota_Lahir__pc}" />
+                        </aura:if>
+                        <aura:if isTrue="{!not(empty(v.acc.Pekerjaan__pc))}">
+                        	<c:CustomLookup objectName="MS_Kota__c" fieldName="Name" value="{!v.acc.Kode_Kota_Lahir__pc}" />
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Tipe Customer
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Tipe_Customer__pc" value="{!v.acc.Tipe_Customer__pc}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Tanggal Lahir (dd/mm/yyyy)
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithdate" aura:id="Tanggal_Lahir__pc" value="{!v.acc.Tanggal_Lahir__pc}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        ID No. (KTP)
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="ID_No_KTP__pc" value="{!v.acc.ID_No_KTP__pc}"/>
+                        </div>
+                    </div>
+        		</div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Email
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithdate" aura:id="Email" value="{!v.acc.PersonEmail}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Kode Warga Negara
+                        <div class=" slds-box_xx-small" style="display:block;">
+                        	<force:inputField class="slds-combobox" aura:id="Kode_Warga_Negara__pc" value="{!v.acc.Kode_Warga_Negara__pc}"/>
+                        </div>
+                    </div>
+        		</div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Pembayar Tagihan
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputcheckbox" aura:id="Pembayar_Tagihan__pc" value="{!v.acc.Pembayar_Tagihan__pc}"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Jenis Kelamin
+                        <div class=" slds-box_xx-small" style="display:block;">
+                        	<force:inputField aura:id="jeniskelamin" value="{!v.acc.Jenis_Kelamin__pc}"/>
+                        </div>
+                    </div>
+        		</div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Pembeli
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputcheckbox" aura:id="Pembeli__pc" value="{!v.acc.Pembeli__pc}"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Agama
+                        <div class="slds-box_xx-small" style="display:block;">
+                        	<force:inputField aura:id="Agama" value="{!v.acc.Agama__pc}"/>
+                        </div>
+                    </div>
+        		</div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Pemilik
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputcheckbox" aura:id="Pemilik__pc" value="{!v.acc.Pemilik__pc}"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">   
+                        Pekerjaan
+                        <aura:if isTrue="{!empty(v.acc.Pekerjaan__pc)}">
+                            <c:CustomLookup objectName="MS_Pekerjaan__c" fieldName="Name" value="{!v.acc.Pekerjaan__pc}" />
+                        	<!--<force:inputField class="widithlookup" aura:id="pekerjaan__pc" value="{!v.acc.Pekerjaan__pc}"/> -->
+                        </aura:if>
+                        <aura:if isTrue="{!not(empty(v.acc.Pekerjaan__pc))}">
+                        	<c:CustomLookup objectName="MS_Pekerjaan__c" fieldName="Name" value="{!v.acc.Pekerjaan__pc}" />
+                        </aura:if>
+                        	
+                    </div>
+        		</div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Penghuni
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputcheckbox" aura:id="Penghuni__pc" value="{!v.acc.Penghuni__pc}"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Nomor Customer
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext widithinputtext:focus" aura:id="Nomor_Customer__pc" value="{!v.acc.Nomor_Customer__pc}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col ">
+                    <div class="form-group divpad">
+                        Unstated Claim
+                        <div class="slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputcheckbox" aura:id="Unstated_Claim__pc" value="{!v.acc.Unstated_Claim__pc}"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            
+            <br/>
+            <h3 force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-container slds-section__title slds-theme--shade">
+                <span force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-title section-header-title slds-p-horizontal--small slds-truncate">Nomor Telepon</span></h3>
+              
+            <div class="slds-grid slds-gutters">
+            	<div class="slds-col slds-size_1-of-2">  
+                    <div class="form-group divpad">
+                        Nomor HP
+                        <div class="slds-box_xx-small" style="display:block;">
+                        	<force:inputField class="widithinputtext widithinputtext:focus" aura:id="Nomor_HP__pc" value="{!v.acc.Nomor_HP__pc}"/>
+                        </div>
+                    </div>
+                    <div class="form-group divpad">
+                        Telepon Kantor
+                        <div class="slds-box_xx-small" style="display:block;">
+                        	<force:inputField class="widithinputtext widithinputtext:focus" aura:id="Telepon_Kantor__pc" value="{!v.acc.Telepon_Kantor__pc}"/>
+                        </div>
+                    </div>
+                    <div class="form-group divpad">
+                        Telepon Rumah
+                        <div class="slds-box_xx-small" style="display:block;">
+                        	<force:inputField class="widithinputtext widithinputtext:focus" aura:id="Telepon_Rumah__pc" value="{!v.acc.Telepon_Rumah__pc}"/>
+                        </div>
+                    </div>
+                </div>
+                    
+            	</div>
+              
+            <br/>
+            <h3 force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-container slds-section__title slds-theme--shade">
+                <span force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-title section-header-title slds-p-horizontal--small slds-truncate">Alamat KTP</span></h3>
+                        
+            <div class="form-group divpad">                
+                <label for="Alamat_KTP__pc">Alamat KTP</label>
+                <div class="slds-box_xx-small " style="display:block;">
+                    <force:inputField class="widithinputtext" aura:id="Alamat_KTP__pc" value="{!v.acc.Alamat_KTP__pc}"/>
+                </div> 
+            </div>            
+            <div class="slds-grid slds-grid_align-left">        
+                
+                <div class="slds-col slds-size_1-of-2" id="AlamatKTP">
+                    <div class="divpad">
+                        <label for="piceklisPropinsiKTP">Propinsi KTP</label>
+                        <select id="piceklisPropinsiKTP" class="slds-select, select2Class" name="PropinsiKTP" style="width:100%">
+                            <option value=" " > --None-- </option>
+                            <aura:iteration items="{!v.Propinsi}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Propinsi_KTP__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>	
+                    <div class="divpad" style="display:block;" >
+                        <label for="piceklisKecamatanKTP">Kecamatan KTP</label>
+                        <select id="piceklisKecamatanKTP" class="slds-select, select2Class" name="KecamatanKTP" style="width:100%">
+                            <option value=" " > --None-- </option>
+                            <aura:iteration items="{!v.KecamatanKTP}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kecamatan_KTP__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>   
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="divpad " style="{!'display:'+toggleKotaKTP+';'}">
+                        <label for="piceklisKotaKTP">Kota KTP</label>
+                        <select id="piceklisKotaKTP" class="slds-select, select2Class" name="KotaKTP" style="width:100%">
+                            <option value=" "> --None-- </option>
+                            <aura:iteration items="{!v.KotaKTP}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kota_KTP__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>
+                    
+                    <div class="divpad" style="display:block;">
+                        <label for="piceklisKelurahanKTP">Kelurahan KTP</label>
+                        <select id="piceklisKelurahanKTP" class="slds-select, select2Class" name="KelurahanKTP" style="width:100%">
+                            <option value=" "> --None-- </option>
+                            <aura:iteration items="{!v.KelurahanKTP}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kelurahan_KTP__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Kode Pos
+                        <div class=" slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Salutation" value="{!v.acc.Kode_Pos_KTP__pc}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <br/>
+            <h3 force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-container slds-section__title slds-theme--shade">
+                <span force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-title section-header-title slds-p-horizontal--small slds-truncate">Alamat Rumah</span></h3>
+                       
+            <div class="form-group divpad">
+                Sama dengan Alamat KTP
+                <div class="slds-box_xx-small" style="display:block;">
+                    <force:inputField class="widithinputcheckbox" aura:id="Unstated_Claim__pc" value="{!v.acc.Sama_dengan_alamat_KTP__c}" change="{!c.SamaChange}"/>
+                </div> 
+            </div>
+            <div class="form-group divpad" aura:id="AlamatRumah">
+                Alamat Rumah
+                <div class="slds-box_xx-small" style="display:block;">
+                    <force:inputField class="widithinputtext" aura:id="Alamat_Rumah__pc" value="{!v.acc.Alamat_Rumah__pc}"/>
+                </div> 
+            </div>
+            <div class="slds-grid slds-gutters" aura:id="AlamatRumahDetail">            	
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="divpad">
+                        <label for="piceklisPropinsiRumah">Propinsi Rumah</label>
+                        <select id="piceklisPropinsiRumah" class="slds-select, select2Class" name="PropinsiRumah" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.Propinsi}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Propinsi_Rumah__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>	
+                    <div class="divpad " style="display:block;">
+                        <label for="piceklisKecamatanRumah">Kecamatan Rumah</label>
+                        <select id="piceklisKecamatanRumah" class="slds-select, select2Class" name="KecamatanRumah" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KecamatanRumah}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kecamatan_Rumah__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>  
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="divpad ">
+                        <label for="piceklisKotaRumah">Kota Rumah</label>
+                        <select id="piceklisKotaRumah" class="slds-select, select2Class" name="KotaRumah" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KotaRumah}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kota_Rumah__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>                    
+                    <div class="divpad " style="display:block;">
+                        <label for="piceklisKelurahanRumah">Kelurahan Rumah</label>
+                        <select id="piceklisKelurahanRumah" class="slds-select, select2Class" name="KelurahanRumah" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KelurahanRumah}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kelurahan_Rumah__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters" aura:id="KodePosRumah">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Kode Pos Rumah
+                        <div class=" slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Salutation" value="{!v.acc.Kode_Pos_Rumah__pc}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <br/>
+            <h3 force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-container slds-section__title slds-theme--shade">
+                <span force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-title section-header-title slds-p-horizontal--small slds-truncate">Alamat Surat</span></h3>
+               
+            <div class="form-group divpad">
+                Alamat Surat
+                <div class="slds-box_xx-small" style="display:block;">
+                    <force:inputField class="widithinputtext" aura:id="Alamat_Surat__pc" value="{!v.acc.Alamat_Surat__pc}"/>
+                </div> 
+            </div>
+            <div class="slds-grid slds-gutters">                  
+                <div class="slds-col slds-size_1-of-2" id="AlamatSurat">
+                    <div class="divpad">
+                        <label for="piceklisPropinsiSurat">Propinsi Surat</label>
+                        <select id="piceklisPropinsiSurat" class="slds-select, select2Class" name="PropinsiSurat" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.Propinsi}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Propinsi_Surat__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>	
+                    <div class="divpad" style="display:block;">
+                        <label for="piceklisKecamatanSurat">Kecamatan Surat</label>
+                        <select id="piceklisKecamatanSurat" class="slds-select, select2Class" name="KecamatanSurat" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KecamatanSurat}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kecamatan_Surat__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>   
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="divpad" style="{!'display:'+toggleKotaSurat+';'}">
+                        <label for="piceklisKotaSurat">Kota Surat</label>
+                        <select id="piceklisKotaSurat" class="slds-select, select2Class" name="KotaSurat" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KotaSurat}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kota_Surat__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>                    
+                    <div class="divpad" style="display:block;">
+                        <label for="piceklisKelurahanSurat">Kelurahan Surat</label>
+                        <select id="piceklisKelurahanSurat" class="slds-select, select2Class" name="KelurahanSurat" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KelurahanSurat}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kelurahan_Surat__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Kode Pos Surat
+                        <div class=" slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Salutation" value="{!v.acc.Kode_Pos_Surat__pc}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <br/>
+            <h3 force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-container slds-section__title slds-theme--shade">
+                <span force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-title section-header-title slds-p-horizontal--small slds-truncate">Alamat Kantor</span></h3>
+            
+            <div class="form-group divpad">
+                Alamat Kantor
+                <div class="slds-box_xx-small" style="display:block;">
+                    <force:inputField class="widithinputtext" aura:id="Alamat_Kantor__pc" value="{!v.acc.Alamat_Kantor__pc}"/>
+                </div> 
+            </div>
+            <div class="slds-grid slds-gutters"> 
+                <div class="slds-col slds-size_1-of-2" id="AlamatKantor">
+                    <div class="divpad">
+                        <label for="piceklisPropinsiKantor">Propinsi Kantor</label>
+                        <select id="piceklisPropinsiKantor" class="slds-select, select2Class" name="PropinsiKantor" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.Propinsi}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Propinsi_Kantor__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>	
+                    <div class="divpad" style="display:block;">
+                        <label for="piceklisKecamatanKantor">Kecamatan Kantor</label>
+                        <select id="piceklisKecamatanKantor" class="slds-select, select2Class" name="KecamatanKantor" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KecamatanKantor}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kecamatan_Kantor__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>
+                </div> 
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="divpad " style="{!'display:'+toggleKotaKantor+';'}">
+                        <label for="piceklisKotaKantor">Kota Kantor</label>
+                        <select id="piceklisKotaKantor" class="slds-select, select2Class" name="KotaKantor" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KotaKantor}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kota_Kantor__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>                     
+                    <div class="divpad" style="display:block;">
+                        <label for="piceklisKelurahanKantor">Kelurahan Kantor</label>
+                        <select id="piceklisKelurahanKantor" class="slds-select, select2Class" name="KelurahanKantor" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KelurahanKantor}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kelurahan_Kantor__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Kode Pos Kantor
+                        <div class=" slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Salutation" value="{!v.acc.Kode_Pos_Kantor__pc}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <br/>
+            <h3 force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-container slds-section__title slds-theme--shade">
+                <span force-recordlayoutsection_recordlayoutsection="" class="test-id__section-header-title section-header-title slds-p-horizontal--small slds-truncate">Alamat Apps</span></h3>
+            
+            <div class="form-group divpad">
+                    Alamat Apps
+                    <div class="slds-box_xx-small" style="display:block;">
+                        <force:inputField class="widithinputtext" aura:id="Alamat_Apps__pc" value="{!v.acc.Alamat_Apps__pc}"/>
+                    </div> 
+                </div>
+            <div class="slds-grid slds-gutters">   
+                <div class="slds-col slds-size_1-of-2" id="AlamatApps">
+                    <div class="divpad">
+                        <label for="piceklisPropinsiApps">Propinsi Apps</label>
+                        <select id="piceklisPropinsiApps" class="slds-select, select2Class" name="PropinsiApps" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.Propinsi}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Propinsi_Apps__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>	
+                    <div class="divpad"  style="{!toggleKecamatanApps}">
+                        <label for="piceklisKecamatanApps">Kecamatan Apps</label>
+                        <select id="piceklisKecamatanApps" class="slds-select, select2Class" name="KecamatanApps" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KecamatanApps}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kecamatan_Apps__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div> 
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="divpad" style="{!'display:'+toggleKotaApps+';'}">
+                        <label for="piceklisKotaApps">Kota Apps</label>
+                        <select id="piceklisKotaApps" class="slds-select, select2Class" name="KotaApps" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KotaApps}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kota_Apps__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div>                     
+                    <div class="divpad" style="display:block;">
+                        <label for="piceklisKelurahanApps">Kelurahan Apps</label>
+                        <select id="piceklisKelurahanApps" class="slds-select, select2Class" name="KelurahanApps" style="width:100%">
+                            <option value=" "  > --None-- </option>
+                            <aura:iteration items="{!v.KelurahanApps}" var="opts">
+                                <option value="{!opts.key}" selected="{!if(opts.key == v.acc.Kode_Kelurahan_Apps__pc, 'selected', '')}"> {!opts.value} </option>
+                            </aura:iteration> 
+                        </select>
+                    </div> 
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="form-group divpad">
+                        Kode Pos Apps
+                        <div class=" slds-box_xx-small" style="display:block;">
+                            <force:inputField class="widithinputtext" aura:id="Salutation" value="{!v.acc.Kode_Pos_Apps__pc}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <div class="slds-align_absolute-center">
+            	<lightning:button variant="brand" label="Save" onclick="{!c.handleAccountSave}" />
+            </div>
+             
+            <br/>
+            <br/>
+            <br/>
+        </div>
+        
+        <br/>          
+    </div>
+</aura:component>
