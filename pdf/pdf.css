@@ -1,0 +1,65 @@
+.THIS.divToPrint {
+    display: none;
+}
+
+@media print {
+    .THIS.divToPrint {
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        position: block;
+        page-break-after: always;
+        margin-top:-130px;
+        /*padding: 15px;
+        font-size: 14px;
+        line-height: 18px;
+        border-top: 98px solid white;*/
+        font-size: 10px;
+        background-color: white;
+        z-index:99999;
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+    .THIS.cHeaderWrapper{
+        display: none;
+        visibility:hidden;
+    }
+    .THIS.comm-navigation{
+        display: none;
+    }
+    .THIS.siteforcePrmBody{
+        display: none;
+        visibility:hidden;
+    }
+    .THIS.cHeader.slds-container--fluid{
+        display: none;
+        visibility:hidden;
+    }    
+    .THIS.cSearchContainer{
+        display: none;
+        visibility:hidden;
+    }
+    .THIS.cNotifications{
+        display: none;
+        visibility:hidden;
+    }    
+    .THIS .slds-accordion__summary-content {
+        font-weight: bold;
+    }    
+    .THIS.hideInPrint{
+        display: none;
+    }
+    .THIS.showInPrint{
+        display: block;
+    }
+    .THIS.modal_footer{
+        position: fixed;
+        bottom: 0;
+    }
+    
+    
+}
+@page{
+    size: A4 portrait;
+    margin-top: 5mm;
+}

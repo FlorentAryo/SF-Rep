@@ -1,0 +1,66 @@
+<aura:component controller="pdfController" implements="flexipage:availableForAllPageTypes,lightning:actionOverride,force:hasRecordId,forceCommunity:layout,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader">
+<aura:html tag="style">
+        .modal-body{
+        height:unset !important;
+        max-height:unset !important;
+        padding : 0 !important;
+        }
+        .cuf-content {
+        padding:0 !important;
+        }
+        .slds-modal__container{
+        	width: 100%;
+        	max-width: 100rem;
+        }
+        .slds-modal__content {
+            height: 100%;
+            padding: 0;
+        }
+        .runtime_platform_actionsQuickActionWrapper .quick-actions-panel {
+            overflow-y: hidden;
+        }
+        
+        @media print {
+        /*.viewport{
+        display : none;
+        }*/
+        .highlights,.region-header{
+        display : none;
+        }
+        .utilitybar{
+        display : none;
+        }
+        .slds-tabs_default__nav{
+        display : none;
+        }
+        .slds-card-wrapper{display : none;}
+        .slds-tabs_card,.slds-tabs_card.slds-tabs_card{ 
+        border-style:unset;
+        border-size:0px;
+        }
+        table { page-break-inside:auto }
+        td    { page-break-inside:avoid; page-break-after:auto }
+        tr { display:table-header-group }
+        
+        .cHeader{
+        display : none;
+        }
+        .comm-content-header{
+        display : none;
+        }
+        .forceChatterFeed{
+        display : none;
+        }
+        .tabs__content{display : none;}
+        .uiTabBar{display : none;}
+        .forcePublisherQuickActionCollapser{display : none;}
+        .spinnerWrapper{display : none;}
+        .body { margin: 1.6cm; }
+        .pagebreak { page-break-before: always; }
+        }
+    </aura:html>
+	
+	<div class="divToPrint">
+	
+	</div>
+	</aura:component>
